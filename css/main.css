@@ -18,3 +18,23 @@
   .search-container button:hover {
     background: #ccc;
   }
+
+  .search-container input[type=text]:required {
+    border: 1px solid red;
+    outline: none;
+  }
+
+  .blink {
+    animation: 1s linear infinite condemned_blink_effect;
+  }
+  @keyframes condemned_blink_effect {
+    0% {
+      visibility: hidden;
+    }
+    50% {
+      visibility: hidden;
+    }
+    100% {
+      visibility: visible;
+    }
+  }

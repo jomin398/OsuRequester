@@ -19,6 +19,14 @@ function Localiztion(d){
 function menuFOS(){
     let d = document.querySelector('#search input').value;
     console.log(d);
+    if(d){
+        document.querySelector('#search').remove();
+    }else{
+        document.querySelector('#search input[type=text]:required').classList.add("blink");
+        setTimeout(() => {
+            document.querySelector('#search input[type=text]:required').classList.remove('blink')
+        }, 2000);
+    }
 }
 window.onload = ()=>{
     console.log(isKor);
