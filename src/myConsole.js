@@ -1,7 +1,7 @@
 var mConsole = (function () {
     var html = [
         '<style>',
-        '#bsConsole{position:fixed;z-index:999999;background:#eee;bottom:0;left:0;right:0;height:200px;display: grid;}',
+        '#bsConsole{position:fixed;z-index:9;background:#eee;bottom:0;left:0;right:0;height:200px;display: grid;}',
         '#bsConsoleTab{background:#ccc;height:20px}',
         '#bsConsoleTabConsole,#bsConsoleTabElement{font-size:11px;margin:2px 5px;padding:0 5px;float:left;border:1px solid #666}',
         '#bsConsoleView{font-size:10px;overflow-y:scroll;height:180px}',

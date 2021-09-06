@@ -1,6 +1,15 @@
 const DevDeffender = (function () {
     const Setups = { detect: 'dev', every: 1000, Protection: true, timer: null };
-    let isMobile = window.orientation > -1;
+    function disableDef(){
+      window.removeEventListener("keydown", Setups.fn);
+            if (Setups.timer) { clearInterval(Setups.timer) };
+            alert("happy coding!");
+            mConsole.log('happy coding');
+            if (isMobile) {
+              document.getElementById('bsConsole').style.display = "grid";
+            }
+            document.getElementById('title').onclick = null;
+    }
     function devToolsOpened(e) {
         if (Setups.Protection) {
             alert("dev mode is blocked!")
@@ -10,13 +19,7 @@ const DevDeffender = (function () {
             // uncomment to prevent opening dev.tools:
             e.preventDefault();
         } else {
-            window.removeEventListener("keydown", Setups.fn);
-            if (Setups.timer) { clearInterval(Setups.timer) };
-            alert("happy coding!");
-            mConsole.log('happy coding');
-            if(isMobile){
-                document.getElementById('bsConsole').style.display = "block";
-            }
+            disableDef()
         }
     }
     function devDefender(e) {
@@ -56,6 +59,7 @@ const DevDeffender = (function () {
                     document.getElementById('title').addEventListener('click', (e) => {
                         Setups.Protection = false;
                         mConsole.log('defender off');
+                        disableDef();
                     })
                     clearInterval(Setups.timer);
                 }

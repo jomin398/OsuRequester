@@ -96,7 +96,7 @@ function menuFOS() {
         const params = new URLSearchParams();
         params.append('query', DB.search);
         params.append('amount', 20);
-        params.append('status', 0); // ranked;
+        //params.append('status', 0); // ranked;
         params.append('offset', 0);
         document.querySelector('#search').remove();
         displayInfo("Requester: Requesting from bloodCat...")
