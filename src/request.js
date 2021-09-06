@@ -1,5 +1,3 @@
-const Lang = navigator.language;
-const isKor = Lang == 'ko-KR';
 const DB = {};
 //Localiztion
 function loadXhr(p, cbf, b) {
@@ -15,9 +13,6 @@ function loadXhr(p, cbf, b) {
         xhr.send();
     }
 
-}
-function Localiztion() {
-    document.getElementById('title').innerText = LocalTextDB[0].t;
 }
 
 /**
@@ -56,6 +51,7 @@ function displayInfo(str) {
     }
     if (str) {
         ele.innerText = Array.isArray(str) ? str.join('\n') : typeof str == 'object' ? JSON.stringify(str) : str;
+        mConsole.log(str)
     }
 }
 function blink(targetElem, showMsg) {
@@ -81,11 +77,11 @@ function makeUserIO() {
             for (el of list) {
                 let bn = document.createElement('button');
                 bn.type = 'button';
-                bn.innerText = "select This";
+                bn.innerText = isKor?LocalTextDB[0].btn[0]:"select This";
                 bn.onclick = () => {
                     DB.user.SelectedBeatMapSetID = bn.parentElement.getElementsByClassName('json-literal')[0].innerText;
-                    displayInfo("Requester: Selected BeatMap's SetId : " + DB.user.SelectedBeatMapSetID)
-                    console.log(DB.user.SelectedBeatMapSetID);
+                    displayInfo((isKor?LocalTextDB[0].BmapSetup[1]:"Requester: Selected BeatMap's SetId : ") + DB.user.SelectedBeatMapSetID)
+                    mConsole.log(DB.user.SelectedBeatMapSetID);
                 };
                 el.querySelector('.json-dict').firstChild.append(bn);
             }
@@ -95,7 +91,7 @@ function makeUserIO() {
 }
 function menuFOS() {
     DB.search = document.querySelector('#search input').value.trim();
-    console.log(DB.search);
+    mConsole.log(DB.search);
     if (DB.search) {
         const params = new URLSearchParams();
         params.append('query', DB.search);
@@ -112,7 +108,7 @@ function menuFOS() {
                     e.Title.trim();
                 }) // delete ChildrenBeatmaps Obj
                 //DB.json.data = DB.json.data.filter(e => (e.Title == DB.search || e.Title.toLowerCase() == DB.search.toLowerCase()))
-                displayInfo("Requester: Look at JSON View!")
+                displayInfo(isKor?LocalTextDB[0].BmapSetup[0]:"Requester: Choose a Song at JSON View!")
                 displayJSON([params.toString(), DB.json]);
                 makeUserIO();
             } else {
@@ -144,6 +140,9 @@ function initSearch() {
     let input = document.createElement('input');
     input.type = 'text';
     input.placeholder = "Search SongName..";
+    if(isKor){
+        input.placeholder = LocalTextDB[0].search;
+    }
     input.name = "search";
     input.required = true;
     let btn = document.createElement("button");
@@ -153,13 +152,4 @@ function initSearch() {
     btn.append(icon);
     searchContiner.append(input, btn);
     document.getElementById('title').insertAdjacentElement('afterend', searchContiner);
-}
-window.onload = () => {
-    console.log(isKor);
-    initSearch();
-    Localiztion();
-    /*document.body.onload = ()=> {
-        //document.getElementById('title').innerText = 'akaka'
-        console.log(isKor);
-    }*/
 }
