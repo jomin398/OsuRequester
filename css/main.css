@@ -37,3 +37,47 @@
       visibility: visible;
     }
   }
+  .BeatmapSearching_options-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: 4px 0 4px 0;
+    flex-grow: 1;
+    background-color: #454141;
+  }
+.BeatmapSearching_options-container div{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.BeatmapSearching_options-container p{
+  padding: 0;
+  margin: 0;
+}
+
+.BeatmapSearching_options-container #title{
+  color: #fff;
+    font-weight: 700;
+        padding: 0;
+    margin: 0;
+}
+
+.BeatmapSearching_options-container #selects {
+  font-weight: 500;
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: .5rem;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding-top: 2px;
+}
+
+.BeatmapSearching_options-container #selects a {
+  color: #ff8686;
+}
+.BeatmapSearching_options-container #selects span {
+  color:#fff;
+}

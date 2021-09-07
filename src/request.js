@@ -66,9 +66,51 @@ function blink(targetElem, showMsg) {
         }
     }, 2000);
 }
+function addFilter() {
+    let nList = ['BeatmapSearching_options-container', 'title', 'selects', 'title', 'selects'];
+    const BstateText = ["Graveyard", "WIP", "Ranked", "Approved", "Qualified", "Loved", "Pending"];
+    let boc = document.querySelector(nList[0]);
+    if (boc) {
+        boc.remove();
+    }
+    boc = document.createElement('div');
+    boc.className = nList[0];
+    for (i = 1; i < nList.length - 1; i++) {
+        let ele = document.createElement('p');
+        ele.id = nList[i];
+        if (i == 1) {
+            ele.innerText = 'Filtering by Name';
+        }
+        if(i==2){
+            
+        }
+        if (i == 3) {
+            ele.innerText = 'Filtering by States';
+        }
+        if (i == 4) {
+            for (j in BstateText) {
+                let sel = document.createElement('a');
+                sel.innerText = BstateText[j];
+                sel.id = BstateText[j];
+                if (j != BstateText.length) {
+                    let spen = document.createElement('span');
+                    spen.innerText = " | ";
+                    if (j != 0) {
+                        ele.appendChild(spen)
+                    }
+
+                }
+                ele.appendChild(sel);
+            }
+        }
+        boc.append(ele);
+    }
+    document.getElementById('jsonWrapper').insertAdjacentElement('beforebegin', boc)
+}
 function makeUserIO() {
     let list = null;
     DB.user = {};
+    addFilter()
     //make await for jsonRenderer
     let timer = setInterval(() => {
         if (document.querySelector('#json-rendrer')) {
@@ -77,10 +119,10 @@ function makeUserIO() {
             for (el of list) {
                 let bn = document.createElement('button');
                 bn.type = 'button';
-                bn.innerText = isKor?LocalTextDB[0].btn[0]:"select This";
+                bn.innerText = isKor ? LocalTextDB[0].btn[0] : "select This";
                 bn.onclick = () => {
                     DB.user.SelectedBeatMapSetID = bn.parentElement.getElementsByClassName('json-literal')[0].innerText;
-                    displayInfo((isKor?LocalTextDB[0].BmapSetup[1]:"Requester: Selected BeatMap's SetId : ") + DB.user.SelectedBeatMapSetID)
+                    displayInfo((isKor ? LocalTextDB[0].BmapSetup[2] : "Requester: Selected BeatMap's SetId : ") + DB.user.SelectedBeatMapSetID)
                     mConsole.log(DB.user.SelectedBeatMapSetID);
                 };
                 el.querySelector('.json-dict').firstChild.append(bn);
@@ -90,6 +132,7 @@ function makeUserIO() {
     }, 1000);
 }
 function menuFOS() {
+    const BstateText = ["Graveyard", "WIP", "Ranked", "Approved", "Qualified", "Loved", "Pending"];
     DB.search = document.querySelector('#search input').value.trim();
     mConsole.log(DB.search);
     if (DB.search) {
@@ -105,11 +148,14 @@ function menuFOS() {
             if (DB.json.code == 0) {
                 DB.json.data.forEach((e) => {
                     delete e.ChildrenBeatmaps;
+                    delete e.Tags;
+                    e.RankedStatusText = BstateText[e.RankedStatus + 2];
                     e.Title.trim();
                 }) // delete ChildrenBeatmaps Obj
                 //DB.json.data = DB.json.data.filter(e => (e.Title == DB.search || e.Title.toLowerCase() == DB.search.toLowerCase()))
-                displayInfo(isKor?LocalTextDB[0].BmapSetup[0]:"Requester: Choose a Song at JSON View!")
+                displayInfo(isKor ? LocalTextDB[0].BmapSetup[1] : "Requester: Choose a Song at JSON View!")
                 displayJSON([params.toString(), DB.json]);
+                document.getElementById('title').removeEventListener('click', menuFOS);
                 makeUserIO();
             } else {
                 displayInfo("Requester: " + DB.json.message + " (" + DB.json.code + ")")
@@ -120,7 +166,7 @@ function menuFOS() {
 
         });
     } else {
-        blink(document.querySelector('#search input[type=text]:required'), "Requester: search Query Can Not be Null.");
+        blink(document.querySelector('#search input[type=text]:required'), (isKor ? LocalTextDB[0].BmapSetup[0] : "Requester: search Query Can Not be Null."));
     }
 }
 function initSearch() {
@@ -140,7 +186,7 @@ function initSearch() {
     let input = document.createElement('input');
     input.type = 'text';
     input.placeholder = "Search SongName..";
-    if(isKor){
+    if (isKor) {
         input.placeholder = LocalTextDB[0].search;
     }
     input.name = "search";
