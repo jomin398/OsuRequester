@@ -82,7 +82,9 @@ function addFilter() {
             ele.innerText = 'Filtering by Name';
         }
         if(i==2){
-            
+            let inp = document.createElement('input');
+            inp.type = 'checkbox';
+            ele.append(inp);
         }
         if (i == 3) {
             ele.innerText = 'Filtering by States';
