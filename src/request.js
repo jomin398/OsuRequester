@@ -67,29 +67,28 @@ function blink(targetElem, showMsg) {
     }, 2000);
 }
 function addFilter() {
-    let nList = ['BeatmapSearching_options-container', 'title', 'selects', 'title', 'selects'];
-    const BstateText = ["Graveyard", "WIP", "Ranked", "Approved", "Qualified", "Loved", "Pending"];
+    let nList = ['BeatmapSearching_options-container', 'title', 'title', 'selects'];
+    const BstateText = DB.StateTextList;
     let boc = document.querySelector(nList[0]);
     if (boc) {
         boc.remove();
     }
     boc = document.createElement('div');
     boc.className = nList[0];
-    for (i = 1; i < nList.length - 1; i++) {
+    for (i = 1; i < 4; i++) {
         let ele = document.createElement('p');
         ele.id = nList[i];
         if (i == 1) {
-            ele.innerText = 'Filtering by Name';
-        }
-        if(i==2){
+            ele.innerText = 'Filtering by Search Name (' + DB.user.search.text + ')';
             let inp = document.createElement('input');
             inp.type = 'checkbox';
             ele.append(inp);
         }
-        if (i == 3) {
+
+        if (i == 2) {
             ele.innerText = 'Filtering by States';
         }
-        if (i == 4) {
+        if (i == 3) {
             for (j in BstateText) {
                 let sel = document.createElement('a');
                 sel.innerText = BstateText[j];
@@ -111,12 +110,11 @@ function addFilter() {
 }
 function makeUserIO() {
     let list = null;
-    DB.user = {};
     addFilter()
     //make await for jsonRenderer
     let timer = setInterval(() => {
         if (document.querySelector('#json-rendrer')) {
-            list = document.querySelector('#json-rendrer > ol > li:nth-child(2) > ul > li:nth-child(3) > ol').childNodes;
+            list = document.querySelector('#json-rendrer > ol').childNodes;
             // append Buttons on beside of BeatMap setIDs
             for (el of list) {
                 let bn = document.createElement('button');
@@ -133,40 +131,51 @@ function makeUserIO() {
         }
     }, 1000);
 }
-function menuFOS() {
-    const BstateText = ["Graveyard", "WIP", "Ranked", "Approved", "Qualified", "Loved", "Pending"];
-    DB.search = document.querySelector('#search input').value.trim();
-    mConsole.log(DB.search);
-    if (DB.search) {
+function menuFOS(filterFn) {
+    DB.StateTextList = isKor ? LocalTextDB[0].BmapSetup[3] : [
+        "Graveyard", "WIP", "Ranked", "Approved", "Qualified", "Loved", "Pending"
+    ];
+    DB.user = {};
+    DB.user.search = {};
+    DB.user.search.text = document.querySelector('#search input').value.trim();
+    mConsole.log(DB.user.search.text);
+    rendering = () => {
+        DB.user.search.data = DB.json.data;
+        //DB.json.data = DB.json.data.filter(e => (e.Title == DB.user.search.text || e.Title.toLowerCase() == DB.user.search.text.toLowerCase()))
+        displayInfo(isKor ? LocalTextDB[0].BmapSetup[1] : "Requester: Choose a Song at JSON View!")
+        displayJSON(DB.user.search.data);
+        makeUserIO();
+    }
+    if (DB.user.search.text) {
         const params = new URLSearchParams();
-        params.append('query', DB.search);
+        params.append('query', DB.user.search.text);
         params.append('amount', 20);
         //params.append('status', 0); // ranked;
         params.append('offset', 0);
         document.querySelector('#search').remove();
         displayInfo("Requester: Requesting from bloodCat...")
-        loadXhr("https://api.chimu.moe/v1/search?" + params.toString(), function (res) {
-            DB.json = JSON.parse(res);
-            if (DB.json.code == 0) {
-                DB.json.data.forEach((e) => {
-                    delete e.ChildrenBeatmaps;
-                    delete e.Tags;
-                    e.RankedStatusText = BstateText[e.RankedStatus + 2];
-                    e.Title.trim();
-                }) // delete ChildrenBeatmaps Obj
-                //DB.json.data = DB.json.data.filter(e => (e.Title == DB.search || e.Title.toLowerCase() == DB.search.toLowerCase()))
-                displayInfo(isKor ? LocalTextDB[0].BmapSetup[1] : "Requester: Choose a Song at JSON View!")
-                displayJSON([params.toString(), DB.json]);
-                document.getElementById('title').removeEventListener('click', menuFOS);
-                makeUserIO();
-            } else {
-                displayInfo("Requester: " + DB.json.message + " (" + DB.json.code + ")")
-                //document.getElementById('jsonWrapper').remove();
-                initSearch();
-                blink(document.querySelector('#search input[type=text]:required'), DB.json.message);
-            }
-
-        });
+        if (!DB.json) {
+            loadXhr("https://api.chimu.moe/v1/search?" + params.toString(), function (res) {
+                DB.json = JSON.parse(res);
+                if (DB.json.code == 0) {
+                    // delete ChildrenBeatmaps Obj
+                    DB.json.data.forEach((e) => {
+                        delete e.ChildrenBeatmaps;
+                        delete e.Tags;
+                        e.RankedStatusText = DB.StateTextList[e.RankedStatus + 2];
+                        e.Title.trim();
+                    });
+                    rendering();
+                } else {
+                    displayInfo("Requester: " + DB.json.message + " (" + DB.json.code + ")")
+                    //document.getElementById('jsonWrapper').remove();
+                    initSearch();
+                    blink(document.querySelector('#search input[type=text]:required'), DB.json.message);
+                }
+            });
+        } else {
+            rendering();
+        }
     } else {
         blink(document.querySelector('#search input[type=text]:required'), (isKor ? LocalTextDB[0].BmapSetup[0] : "Requester: search Query Can Not be Null."));
     }
@@ -194,7 +203,7 @@ function initSearch() {
     input.name = "search";
     input.required = true;
     let btn = document.createElement("button");
-    btn.addEventListener("click", menuFOS);
+    btn.onclick = menuFOS;
     let icon = document.createElement('i');
     icon.className = 'fa fa-search';
     btn.append(icon);

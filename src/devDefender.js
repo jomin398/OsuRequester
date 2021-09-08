@@ -1,8 +1,13 @@
-const DevDeffender = (function () {
-    const Setups = { detect: 'dev', every: 1000, Protection: true, timer: null };
+const DevDefenderSetups = {
+    detect: 'dev',
+    every: 1000,
+    Protection: true,
+    timer: null
+};
+const DevDefender = (function () {
     function disableDef(){
-      window.removeEventListener("keydown", Setups.fn);
-            if (Setups.timer) { clearInterval(Setups.timer) };
+      window.removeEventListener("keydown", DevDefenderSetups.fn);
+            if (DevDefenderSetups.timer) { clearInterval(DevDefenderSetups.timer) };
             alert("happy coding!");
             mConsole.log('happy coding');
             if (isMobile) {
@@ -11,7 +16,7 @@ const DevDeffender = (function () {
             document.getElementById('title').onclick = null;
     }
     function devToolsOpened(e) {
-        if (Setups.Protection) {
+        if (DevDefenderSetups.Protection) {
             alert("dev mode is blocked!")
             setTimeout(() => {
                 window.location.assign('http://www.example.com'); //auto redirect for Prevent Hack.
@@ -49,22 +54,22 @@ const DevDeffender = (function () {
     }
 
     function on() {
-        Setups.fn = (e) => devDefender(e);
-        window.addEventListener('keydown', Setups.fn);
+        DevDefenderSetups.fn = (e) => devDefender(e);
+        window.addEventListener('keydown', DevDefenderSetups.fn);
         mConsole.log('defender on');
 
-        Setups.timer = setInterval(() => {
+        DevDefenderSetups.timer = setInterval(() => {
             if (document.querySelector('#search input')) {
-                if (document.querySelector('#search input').value == Setups.detect) {
-                    document.getElementById('title').addEventListener('click', (e) => {
-                        Setups.Protection = false;
+                if (document.querySelector('#search input').value == DevDefenderSetups.detect) {
+                    document.getElementById('title').onclick = (e) => {
+                        DevDefenderSetups.Protection = false;
                         mConsole.log('defender off');
                         disableDef();
-                    })
-                    clearInterval(Setups.timer);
+                    };
+                    clearInterval(DevDefenderSetups.timer);
                 }
             }
-        }, Setups.every);
+        }, DevDefenderSetups.every);
     }
-    return { on, isRun: (function () { return Setups.Protection })(), Setups };
+    return { on, DevDefenderSetups };
 })()
