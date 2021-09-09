@@ -5,7 +5,7 @@ var isMobile = false;
 window.onload = () => {
   isMobile = document.body.clientWidth <= 510;
     DevDefender.on();
-    mConsole.log(isKor);
+    console.log(isKor);
     initSearch();
     Localiztion();
 }

@@ -9,10 +9,7 @@ const DevDefender = (function () {
       window.removeEventListener("keydown", DevDefenderSetups.fn);
             if (DevDefenderSetups.timer) { clearInterval(DevDefenderSetups.timer) };
             alert("happy coding!");
-            mConsole.log('happy coding');
-            if (isMobile) {
-              document.getElementById('bsConsole').style.display = "grid";
-            }
+            console.log('happy coding');
             document.getElementById('title').onclick = null;
     }
     function devToolsOpened(e) {
@@ -56,14 +53,14 @@ const DevDefender = (function () {
     function on() {
         DevDefenderSetups.fn = (e) => devDefender(e);
         window.addEventListener('keydown', DevDefenderSetups.fn);
-        mConsole.log('defender on');
+        console.log('defender on');
 
         DevDefenderSetups.timer = setInterval(() => {
             if (document.querySelector('#search input')) {
                 if (document.querySelector('#search input').value == DevDefenderSetups.detect) {
                     document.getElementById('title').onclick = (e) => {
                         DevDefenderSetups.Protection = false;
-                        mConsole.log('defender off');
+                        console.log('defender off');
                         disableDef();
                     };
                     clearInterval(DevDefenderSetups.timer);

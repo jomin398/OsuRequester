@@ -78,6 +78,10 @@
 .BeatmapSearching_options-container #selects a {
   color: #ff8686;
 }
+.BeatmapSearching_options-container #selects a.clicked{
+  color: #86cdff;
+}
+
 .BeatmapSearching_options-container #selects span {
   color:#fff;
 }
