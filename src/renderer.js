@@ -43,7 +43,7 @@ function addFilter() {
                 let sel = document.createElement('a');
                 sel.innerText = BNamefilters[j];
                 sel.id = BNamefilters[j];
-                if(j==0){
+                if (j == 0) {
                     sel.classList.add('clicked');
                 }
                 sel.onclick = () => {
@@ -56,7 +56,7 @@ function addFilter() {
                                 e.classList.remove(n)
                             }
                         })
-                        console.log('setted Search Name Filter to',sel.id)
+                        console.log('setted Search Name Filter to', sel.id)
                         sel.classList.add(n);
                     }
                 }
@@ -89,7 +89,7 @@ function addFilter() {
                                 e.classList.remove(n)
                             }
                         })
-                        console.log('setted Search Name Filter to',sel.id)
+                        console.log('setted Search Name Filter to', sel.id)
                         sel.classList.add(n);
                     }
                 }
@@ -125,6 +125,16 @@ function makeUserIO() {
                     bn.onclick = () => {
                         DB.user.SelectedBeatMapSetID = bn.parentElement.getElementsByClassName('json-literal')[0].innerText;
                         displayInfo((isKor ? LocalTextDB[0].BmapSetup[2] : "Requester: Selected BeatMap's SetId : ") + DB.user.SelectedBeatMapSetID)
+                        sdp = document.getElementById('sdp');
+                        if (sdp) { sdp.remove() };
+
+                        sdp = document.createElement('audio');
+                        sdp.id ='sdp';
+                        document.getElementById('displayInfo').insertAdjacentElement('afterend', sdp);
+                        sdp.src = 'https://b.ppy.sh/preview/' + DB.user.SelectedBeatMapSetID + ".mp3";
+                        sdp.controls = true;
+                        sdp.autoplay = true;
+                        sdp.controlsList = "nodownload";
                         console.log(DB.user.SelectedBeatMapSetID);
                     };
                     el.querySelector('.json-dict').firstChild.append(bn);
@@ -137,9 +147,28 @@ function makeUserIO() {
         }
     }, 1000);
 }
+function setLocalText() {
+    r = [];
+    or = DB.user.search.data;
+    or.forEach(o => {
+        res = {};
+        cl = [
+            "식별 ID", "랭킹 상태 (숫자)", "등록 일",
+            "최종 수정", "최종 확인", "아티스트", "곡명", "제작자",
+            "소스/출처", "영상유무", "장르", "언어",
+            "하트 수 (좋아요 수)", "비공개 상태", "랭킹 상태"];
+        for (j in Object.keys(o)) {
+            res[cl[j]] = o[Object.keys(o)[j]];
+        }
+        r.push(res)
+    })
+    return r
+}
 function rendering() {
     //DB.json.data = DB.json.data.filter(e => (e.Title DB.user.search.text || e.Title.toLowerCase() == DB.user.search.text.toLowerCase()))
-    displayInfo(isKor ? LocalTextDB[0].BmapSetup[1] : "Requester: Choose a Song at JSON View!")
+    displayInfo(isKor ? LocalTextDB[0].BmapSetup[1] : "Requester: Choose a Song at JSON View!");
+
+    DB.user.search.data = setLocalText();
     displayJSON(DB.user.search.data);
     makeUserIO();
 }
@@ -159,7 +188,7 @@ function menuFOS() {
         params.append('offset', 0);
         document.querySelector('#search').remove();
         displayInfo("Requester: Requesting from bloodCat...")
-        if (!DB.json) {
+        if (!DB.json || DB.json.code == 106) {
             loadXhr("https://api.chimu.moe/v1/search?" + params.toString(), function (res) {
                 DB.json = JSON.parse(res);
                 if (DB.json.code == 0) {
@@ -167,6 +196,9 @@ function menuFOS() {
                     DB.json.data.forEach((e) => {
                         delete e.ChildrenBeatmaps;
                         delete e.Tags;
+                        if (e.Source.includes('?')) {
+                            e.Source = "";
+                        }
                         e.RankedStatusText = DB.StateTextList[e.RankedStatus + 2];
                         e.Title.trim();
                     });
