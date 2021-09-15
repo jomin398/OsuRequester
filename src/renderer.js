@@ -1,3 +1,25 @@
+function dofilter(n) {
+    console.log(n);
+    switch (n) {
+        case -1:
+            DB.user.search.data = DB.json.data;
+            break;
+        // case 0:
+        //     DB.user.search.data = DB.json.data.filter(e => {
+        //         return (e.Title.includes(DB.user.search.text) || e.Title.toLowerCase().includes(DB.user.search.text.toLowerCase()))
+        //     });
+        //     break;
+        case 1:
+            DB.user.search.data = DB.json.data.filter(e => {
+                return (e.Title == DB.user.search.text || e.Title.toLowerCase() == DB.user.search.text.toLowerCase())
+            })
+            break;
+        default:
+            DB.user.search.data = DB.json.data;
+    }
+    rendering();
+}
+
 function addFilter() {
     let nList = ['BeatmapSearching_options-container', 'title', 'selects', 'title', 'selects'];
     const BNamefilters = ['Included Match', 'Equally Match'];
@@ -43,9 +65,7 @@ function addFilter() {
                 let sel = document.createElement('a');
                 sel.innerText = BNamefilters[j];
                 sel.id = BNamefilters[j];
-                if (j == 0) {
-                    sel.classList.add('clicked');
-                }
+
                 sel.onclick = () => {
                     let n = 'clicked';
                     if (sel.classList.contains(n)) {
@@ -56,8 +76,11 @@ function addFilter() {
                                 e.classList.remove(n)
                             }
                         })
-                        console.log('setted Search Name Filter to', sel.id)
-                        sel.classList.add(n);
+                        console.log('setted Search Name Filter to', sel.id);
+                        num = BNamefilters.indexOf(sel.id);
+                        DB.user.search.filterNo = num;
+                        // sel.classList.add(n);
+                        dofilter(num);
                     }
                 }
                 if (j != BNamefilters.length) {
@@ -129,7 +152,7 @@ function makeUserIO() {
                         if (sdp) { sdp.remove() };
 
                         sdp = document.createElement('audio');
-                        sdp.id ='sdp';
+                        sdp.id = 'sdp';
                         document.getElementById('displayInfo').insertAdjacentElement('afterend', sdp);
                         sdp.src = 'https://b.ppy.sh/preview/' + DB.user.SelectedBeatMapSetID + ".mp3";
                         sdp.controls = true;
@@ -171,6 +194,9 @@ function rendering() {
     DB.user.search.data = setLocalText();
     displayJSON(DB.user.search.data);
     makeUserIO();
+    let selnum = DB.user.search.filterNo||0;
+    selnum = selnum % 2 === 0?selnum:selnum+1;
+    document.querySelector('#selects').childNodes[selnum].classList.add('clicked');
 }
 function menuFOS() {
     DB.StateTextList = isKor ? LocalTextDB[0].BmapSetup[3] : [
@@ -202,8 +228,8 @@ function menuFOS() {
                         e.RankedStatusText = DB.StateTextList[e.RankedStatus + 2];
                         e.Title.trim();
                     });
-                    DB.user.search.data = DB.json.data;
-                    rendering();
+                    DB.user.search.filterNo = 0;
+                    dofilter(-1);
                 } else {
                     displayInfo("Requester: " + DB.json.message + " (" + DB.json.code + ")")
                     //document.getElementById('jsonWrapper').remove();
