@@ -1,3 +1,7 @@
+const Renderer = {
+    errors: 0
+}
+
 function dofilter(n) {
     console.log(n);
     switch (n) {
@@ -131,6 +135,40 @@ function addFilter() {
     }
     document.getElementById('jsonWrapper').insertAdjacentElement('beforebegin', boc)
 }
+function appendSdp() {
+    let sdp = document.getElementById('sdp');
+    if (sdp) { sdp.remove() };
+
+    sdp = document.createElement('audio');
+    sdp.id = 'sdp';
+    sdp.src = 'https://b.ppy.sh/preview/' + DB.user.SelectedBeatMapSetID + ".mp3";
+    sdp.controls = true;
+    sdp.autoplay = true;
+    sdp.controlsList = "nodownload";
+    document.getElementById('displayInfo').insertAdjacentElement('afterend', sdp);
+}
+function appendSdsBtn(){
+    let sdsBtnw = document.getElementById('sdsBtnw');
+    if(sdsBtnw){sdsBtnw.remove()};
+    sdsBtnw = document.createElement('div');
+    sdsBtnw.id= 'sdsBtnw';
+
+    let label = document.getElementById('sdsBtnlabel');
+    label =document.createElement('label');
+    label.id = "sdsBtnlabel";
+    label.innerText =LocalTextDB[0].btnL;
+    label.style.marginRight= '5px';
+    let btn = document.getElementById('sdsBtn');
+  
+    btn = document.createElement('button');
+    btn.id = 'sdsBtn';
+    btn.innerText =LocalTextDB[0].btn[2];
+    btn.onclick =()=>{
+        osuDL.init(DB.user.SelectedBeatMapSetID);
+    }
+    sdsBtnw.append(document.createElement('br'),label,btn);
+    document.getElementById('sdp').insertAdjacentElement('afterend', sdsBtnw);
+}
 function makeUserIO() {
     let list = null;
     addFilter()
@@ -148,16 +186,8 @@ function makeUserIO() {
                     bn.onclick = () => {
                         DB.user.SelectedBeatMapSetID = bn.parentElement.getElementsByClassName('json-literal')[0].innerText;
                         displayInfo((isKor ? LocalTextDB[0].BmapSetup[2] : "Requester: Selected BeatMap's SetId : ") + DB.user.SelectedBeatMapSetID)
-                        sdp = document.getElementById('sdp');
-                        if (sdp) { sdp.remove() };
-
-                        sdp = document.createElement('audio');
-                        sdp.id = 'sdp';
-                        document.getElementById('displayInfo').insertAdjacentElement('afterend', sdp);
-                        sdp.src = 'https://b.ppy.sh/preview/' + DB.user.SelectedBeatMapSetID + ".mp3";
-                        sdp.controls = true;
-                        sdp.autoplay = true;
-                        sdp.controlsList = "nodownload";
+                        appendSdp();
+                        appendSdsBtn();
                         console.log(DB.user.SelectedBeatMapSetID);
                     };
                     el.querySelector('.json-dict').firstChild.append(bn);
@@ -165,7 +195,16 @@ function makeUserIO() {
                 clearInterval(timer);
             } else {
                 clearInterval(timer);
-                displayInfo("Requester: Error: JSON Renderer");
+                Renderer.errors++;
+                if (Renderer.errors != 1) {
+                    displayInfo("Requester: Error: JSON Renderer");
+                    displayInfo("Requester: ReRendering...");
+                    dofilter(-1);
+                } else {
+                    displayInfo("Requester: ReLoad Page");
+                    initSearch();
+                    blink(document.querySelector('#search input[type=text]:required'), "Reloaded, Lasttime threw by error.");
+                }
             }
         }
     }, 1000);
@@ -190,12 +229,14 @@ function setLocalText() {
 function rendering() {
     //DB.json.data = DB.json.data.filter(e => (e.Title DB.user.search.text || e.Title.toLowerCase() == DB.user.search.text.toLowerCase()))
     displayInfo(isKor ? LocalTextDB[0].BmapSetup[1] : "Requester: Choose a Song at JSON View!");
-
+    if (!DB.user.search.data) {
+        DB.user.search.data = DB.json.data;
+    }
     DB.user.search.data = setLocalText();
     displayJSON(DB.user.search.data);
     makeUserIO();
-    let selnum = DB.user.search.filterNo||0;
-    selnum = selnum % 2 === 0?selnum:selnum+1;
+    let selnum = DB.user.search.filterNo || 0;
+    selnum = selnum % 2 === 0 ? selnum : selnum + 1;
     document.querySelector('#selects').childNodes[selnum].classList.add('clicked');
 }
 function menuFOS() {
@@ -251,6 +292,14 @@ function initSearch() {
         <button><i class="fa fa-search"></i></button>
     </div>
     */
+    let bmpSearchop = document.getElementsByClassName('BeatmapSearching_options-container')[0];
+    if (bmpSearchop) {
+        bmpSearchop.remove();
+    }
+    let jsonWrapper = document.getElementById('jsonWrapper');
+    if (jsonWrapper) {
+        jsonWrapper.remove();
+    }
     let searchContiner = document.getElementById('search');
     if (searchContiner) {
         searchContiner.remove();
