@@ -112,7 +112,7 @@ const osuDL = {
                         function noimg(){
                             let img = document.body.querySelector('.player .left img');
                             img.style.backgroundColor = '#5a4747';
-                            img.alt = isKor ? LocalTextDB[0].BmapDL[2][0] :'No Bk';
+                            img.alt = isKor ? LocalTextDB[0].BmapDL[2][0] :'No Bk (vinyl image will setted)';
                         }
                         list.forEach((u, i) => {
                             if (i == 0) {
@@ -162,10 +162,13 @@ const osuDL = {
                                     let aud = document.body.querySelector('.player .right .bottom');
                                     aud.download = osuDL.songInfo.fileName;
                                     aud.href = l;
+                                    document.body.querySelector('a:nth-child(2)').href = l;
+                                    document.body.querySelector('a:nth-child(2)').download = osuDL.songInfo.fileName;
                                     noti(baseElem.getElementsByTagName('a')[1]);
                                     let time = setTimeout(() => {
                                         clearTimeout(time);
                                         noti(baseElem.querySelector('p#title'));
+                                        noti(document.body.querySelector('.player'));
                                     }, 3100);
                                     aud.querySelector('audio').src = l;
                                     if(list.length!=2){
@@ -201,7 +204,9 @@ const osuDL = {
                             }
                             
                         })
-                    })
+                    }).then(null, function error(e) {
+                        displayInfo("osuDL: reading Osz Error : "+e);
+                    });
             } else {
                 displayInfo("osuDL: " + JSON.stringify(new Error(res.statusText)));
             }

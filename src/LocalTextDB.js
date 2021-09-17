@@ -41,7 +41,7 @@ const LocalTextDB = [
             ],
             //errors
             [
-                "배경 없음"
+                "배경 없음 (LP 이미지로 교체필요함)"
             ]
         ]
     }
