@@ -1,0 +1,38 @@
+.player {
+    background: #F9F9F9;
+    color: #000;
+    min-height: 80px;
+    display: block;
+    position: relative;
+    /* position: absolute; */
+    width: 100%;
+}
+.player .left {
+    position: absolute;
+}
+
+.player .left img { 
+    width: 80px;
+    object-fit:scale-down;
+    min-height: 80px;
+    max-height: 80px;
+    background-size: cover;
+}
+
+.player .right {
+    margin-left: 80px;
+}
+
+.player .right .top {
+    padding-left: 10px;
+}
+
+.player .right .top .title {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.player .right .bottom audio {
+    height: 25px;
+    width: 100%;
+}

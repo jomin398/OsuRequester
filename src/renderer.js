@@ -38,7 +38,7 @@ function addFilter() {
         let ele = document.createElement('p');
         ele.id = nList[i];
         if (i == 1) {
-            ele.innerText = 'Filtering by Search Name (' + DB.user.search.text + ')';
+            ele.innerText = (isKor?(LocalTextDB[0].BmapSetup[6][0]):('Filtering by Search Name (' + DB.user.search.text + ')'));
             /*
             let inp = document.createElement('input');
             inp.type = 'checkbox';
@@ -67,7 +67,7 @@ function addFilter() {
         if (i == 2) {
             for (j in BNamefilters) {
                 let sel = document.createElement('a');
-                sel.innerText = BNamefilters[j];
+                sel.innerText = isKor?LocalTextDB[0].BmapSetup[6][1][j]:BNamefilters[j];
                 sel.id = BNamefilters[j];
 
                 sel.onclick = () => {
@@ -99,7 +99,7 @@ function addFilter() {
             }
         }
         if (i == 3) {
-            ele.innerText = 'Filtering by States';
+            ele.innerText = isKor?LocalTextDB[0].BmapSetup[6][2]:'Filtering by States';
         }
         if (i == 4) {
             for (j in BstateText) {
@@ -147,27 +147,26 @@ function appendSdp() {
     sdp.controlsList = "nodownload";
     document.getElementById('displayInfo').insertAdjacentElement('afterend', sdp);
 }
-function appendSdsBtn(){
+function appendSdsBtn() {
     let sdsBtnw = document.getElementById('sdsBtnw');
-    if(sdsBtnw){sdsBtnw.remove()};
+    if (sdsBtnw) { sdsBtnw.remove() };
     sdsBtnw = document.createElement('div');
-    sdsBtnw.id= 'sdsBtnw';
+    sdsBtnw.id = 'sdsBtnw';
 
     let label = document.getElementById('sdsBtnlabel');
-    label =document.createElement('label');
+    label = document.createElement('label');
     label.id = "sdsBtnlabel";
-    label.innerText =LocalTextDB[0].btnL;
-    label.style.marginRight= '5px';
+    label.innerText = LocalTextDB[0].btnL;
+    label.style.marginRight = '5px';
     let btn = document.getElementById('sdsBtn');
-  
+
     btn = document.createElement('button');
     btn.id = 'sdsBtn';
-    btn.innerText =LocalTextDB[0].btn[2];
-    btn.onclick =()=>{
+    btn.innerText = LocalTextDB[0].btn[2];
+    btn.onclick = () => {
         osuDL.init(DB.user.SelectedBeatMapSetID);
-        displayJSON({songInfo:osuDL.songInfo,reqUrl:osuDL.reqUrl});
     }
-    sdsBtnw.append(document.createElement('br'),label,btn);
+    sdsBtnw.append(document.createElement('br'), label, btn);
     document.getElementById('sdp').insertAdjacentElement('afterend', sdsBtnw);
 }
 function makeUserIO() {
@@ -255,7 +254,7 @@ function menuFOS() {
         //params.append('status', 0); // ranked;
         params.append('offset', 0);
         document.querySelector('#search').remove();
-        displayInfo("Requester: Requesting from bloodCat...")
+        displayInfo("Requester: "+(isKor?LocalTextDB[0].BmapSetup[5][0]:"Requesting from osu! site..."))
         if (!DB.json || DB.json.code == 106) {
             loadXhr("https://api.chimu.moe/v1/search?" + params.toString(), function (res) {
                 DB.json = JSON.parse(res);
@@ -310,10 +309,7 @@ function initSearch() {
     searchContiner.className = 'search-container';
     let input = document.createElement('input');
     input.type = 'text';
-    input.placeholder = "Search SongName..";
-    if (isKor) {
-        input.placeholder = LocalTextDB[0].search;
-    }
+    input.placeholder = isKor?LocalTextDB[0].search:"Search SongName..";
     input.name = "search";
     input.required = true;
     let btn = document.createElement("button");

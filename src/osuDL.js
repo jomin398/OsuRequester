@@ -35,36 +35,39 @@ const osuDL = {
         el = document.createElement('div');
         el.className = 'BeatmapSearching_options-container';
         bmapLink = document.createElement('a');
-        bmapLink.innerText = isKor?LocalTextDB[0].BmapDL[0][0]:'Beatmap Download Link';
+        bmapLink.innerText = isKor ? LocalTextDB[0].BmapDL[0][0] : 'Beatmap Download Link';
         bmapLink.href = this.reqUrl;
         bmapLink.style.textDecoration = 'none';
         bmapLink.style.color = '#ff8686';
         el.append(bmapLink);
         document.getElementById('displayInfo').insertAdjacentElement('afterend', el);
+        displayJSON({ songInfo: osuDL.songInfo, reqUrl: osuDL.reqUrl }); //{collapsed: true}
         this.add();
+        
     },
     add: function () {
-        const noti = function(t){
-           
-                t.style.border = '2px solid red';
-                t.style.animation = '1s linear infinite condemned_blink_effect';
-            setTimeout(() => {
+        const noti = function (t) {
+
+            t.style.border = '2px solid red';
+            t.style.animation = '1s linear infinite condemned_blink_effect';
+            let timer = setTimeout(() => {
+                clearTimeout(timer);
                 t.style.border = null;
                 t.style.animation = null;
-            }, 2000);
-            
+            }, 3000);
+
         }
-        displayInfo("osuDL: "+(isKor?LocalTextDB[0].BmapDL[1][0]: "Promissing Osz file.. 1/2"));
+        displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][0] : "Promissing Osz file.. 1/2"));
         const baseElem = document.getElementsByClassName('BeatmapSearching_options-container')[0];
         // 1) fetch the Osz url
         fetch(this.reqUrl).then(res => {
             // 2) filter on 200 OK
             if (res.status === 200 || res.status === 0) {
-                displayInfo("osuDL: "+(isKor?LocalTextDB[0].BmapDL[1][1]:"Promissing Osz file... 2/2"));
+                displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][1] : "Promissing Osz file... 2/2"));
                 // 3) fetch the zip as Osz file
                 fetch(res.url.replace(/\.osz$/gm, '.zip'))
                     .then(function (response) {
-                        displayInfo("osuDL: "+(isKor?LocalTextDB[0].BmapDL[1][2]:"reading Osz file..."));
+                        displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][2] : "reading Osz file..."));
                         // 4) return the zip file contents
                         return Promise.resolve(response.blob());
                     })
@@ -72,9 +75,9 @@ const osuDL = {
                     .then(JSZip.loadAsync)
                     // 6) parse zip file then get mp3 file.                       
                     .then(function (zip) {
-                        displayInfo("osuDL: "+(isKor?LocalTextDB[0].BmapDL[1][3]:"Parsing Osz file..."));
+                        displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][3] : "Parsing Osz file..."));
                         console.log(zip.files)
-
+                        osuDL.zip = zip.files;
                         //find file mp3 of beatmap audio.
                         let mp3Filter = w => w.match(/\.mp3$/gm);
                         let mp3 = Object.keys(zip.files).filter((t) => mp3Filter(t))[0];
@@ -83,48 +86,120 @@ const osuDL = {
                         }
                         //find .jpg/png file of beatmap background.
                         let picFilter = w => w.match(/\.(jpg|png|jpeg)$/gm);
-                        let pic = Object.keys(zip.files).filter((t) => picFilter(t))[0];
+                        let isBk = w=>/b(ackground|k|g)/gm.test(w);
+                        let selBk= w=>w.filter(y=>isBk(y));
+                        let pics = Object.keys(zip.files).filter((t) => picFilter(t));
+                        pics = isBk(pics)?selBk(pics):pics;
+                        let pic = pics[0];
                         let list = new Array();
                         list.push(mp3);
                         if (pic) {
                             list.push(pic);
                         }
-                        displayInfo("osuDL: "+(isKor?LocalTextDB[0].BmapDL[1][4]:"Generate... link"));
+                        displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][4] : "Generate... link"));
                         bmapLink = document.createElement('a');
-                        bmapLink.innerText = isKor?LocalTextDB[0].BmapDL[0][1]:'audio Download Link';
+                        bmapLink.innerText = isKor ? LocalTextDB[0].BmapDL[0][1] : 'audio Download Link';
                         bmapLink.href = '#';
                         bmapLink.style.textDecoration = 'none';
                         bmapLink.style.color = '#ff8686';
                         baseElem.append(bmapLink);
 
                         audioInfo = document.createElement('p');
-                        audioInfo.innerText = isKor?LocalTextDB[0].BmapDL[0][2]:"Listenable full version of song. (depend on beatmap's length)";
+                        audioInfo.innerText = isKor ? LocalTextDB[0].BmapDL[0][2] : "Listenable full version of song. at the bottom of site! (depend on beatmap's length)";
                         audioInfo.id = 'title';
                         baseElem.append(audioInfo);
+                        //if no image of background.
+                        function noimg(){
+                            let img = document.body.querySelector('.player .left img');
+                            img.style.backgroundColor = '#5a4747';
+                            img.alt = isKor ? LocalTextDB[0].BmapDL[2][0] :'No Bk';
+                        }
                         list.forEach((u, i) => {
-                            let teg = document.createElement('br');
                             if (i == 0) {
-                                teg = document.createElement('audio');
-                                teg.controls = true;
-                                zip.file(u).async('blob').then(f => {
-                                    let l =  window.URL.createObjectURL(f);
-                                    baseElem.getElementsByTagName('a')[1].download=osuDL.songInfo.fileName;
-                                    baseElem.getElementsByTagName('a')[1].href = l;
-                                    noti(baseElem.getElementsByTagName('a')[1]);
-                                    baseElem.getElementsByTagName('audio')[0].src = l;
-                                    displayInfo("osuDL: "+(isKor?LocalTextDB[0].BmapDL[1][5]:"Ready to Download or play song!"));
-                                    
+ 
+                                
+                                basebottom = document.createElement('div');
+                                basebottom.className = 'player';
+                                let arr = ["left","right"];
+                                arr.forEach((el,j) => {
+                                    let ele = null;
+                                    if(j==0){
+                                        ele = document.createElement('a');
+                                        ele.className = el;
+                                        let img = document.createElement('img');
+                                        img.alt = 'preview';
+                                        ele.appendChild(img);
+                                    }else{
+                                        ele = document.createElement('div');
+                                        ele.className = el;
+                                        let top = document.createElement('div');
+                                        top.className = 'top';
+                                        let tit = document.createElement('a');
+                                        tit.className = 'title';
+                                        tit.innerText = osuDL.songInfo.title;
+                                        let art = document.createElement('a');
+                                        art.className = 'artist';
+                                        art.innerText = osuDL.songInfo.artist;
+                                        top.append(tit,document.createElement('br'),art);
+                                        if(osuDL.songInfo.source){
+                                            let source = document.createElement('a');
+                                            source.className = 'source';
+                                            source.innerText = osuDL.songInfo.source.trim();
+                                            top.append(document.createElement('br'),source);
+                                        }
+                                        
+                                        let bott = document.createElement('div');
+                                        bott.className = 'bottom';
+                                        let aud = document.createElement('audio');
+                                        aud.controls = true;
+                                        bott.appendChild(aud);
+                                        ele.append(top,bott);
+                                    }
+                                    basebottom.appendChild(ele);
                                 });
+                                zip.file(u).async('blob').then(f => {
+                                    let l = window.URL.createObjectURL(f);
+                                    let aud = document.body.querySelector('.player .right .bottom');
+                                    aud.download = osuDL.songInfo.fileName;
+                                    aud.href = l;
+                                    noti(baseElem.getElementsByTagName('a')[1]);
+                                    let time = setTimeout(() => {
+                                        clearTimeout(time);
+                                        noti(baseElem.querySelector('p#title'));
+                                    }, 3100);
+                                    aud.querySelector('audio').src = l;
+                                    if(list.length!=2){
+                                        noimg();
+                                    }
+                                    displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][5] : "Ready to Download or play song!"));
+                                });
+                                document.body.appendChild(basebottom);
                             } else if (i == 1) {
-                                teg = document.createElement('img');
-                                teg.style.width = '80%';
-                                teg.alt = u;
-                                zip.file(u).async('blob').then(f=>{
-                                    baseElem.getElementsByTagName('img')[0].src = window.URL.createObjectURL(f);
+
+                                teg = document.createElement('a');
+                                teg.id = 'bk';
+                                let img = document.createElement('img');
+                                img.style.width = '80%';
+                                img.style.margin = 'auto';
+                                teg.alt = 'BeatMap BackGround Image';
+                                teg.style.textAlign = 'center';
+                                teg.appendChild(img);
+                                teg.style.margin = 'auto';
+
+                                zip.file(u).async('blob').then(f => {
+                                   
+                                    baseElem.querySelector('a#bk').download = [
+                                        "[", osuDL.songInfo.setID, "] ", osuDL.songInfo.title, ".jpg"
+                                    ].join('');
+                                    let u = window.URL.createObjectURL(f);
+                                    document.body.querySelector('.player .left img').src = u;
+                                    baseElem.querySelector('a#bk img').src = u;
+                                    baseElem.querySelector('a#bk').href = u;
                                 });
                                 baseElem.append(document.createElement('br'));
+                                baseElem.append(teg);
                             }
-                            baseElem.append(teg)
+                            
                         })
                     })
             } else {

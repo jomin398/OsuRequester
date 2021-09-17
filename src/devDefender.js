@@ -5,12 +5,12 @@ const DevDefenderSetups = {
     timer: null
 };
 const DevDefender = (function () {
-    function disableDef(){
-      window.removeEventListener("keydown", DevDefenderSetups.fn);
-            if (DevDefenderSetups.timer) { clearInterval(DevDefenderSetups.timer) };
-            alert("happy coding!");
-            console.log('happy coding');
-            document.getElementById('title').onclick = null;
+    function disableDef() {
+        window.removeEventListener("keydown", DevDefenderSetups.fn);
+        if (DevDefenderSetups.timer) { clearInterval(DevDefenderSetups.timer) };
+        alert("happy coding!");
+        console.log('happy coding');
+        document.getElementById('title').onclick = null;
     }
     function devToolsOpened(e) {
         if (DevDefenderSetups.Protection) {

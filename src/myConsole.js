@@ -46,15 +46,15 @@ var mConsole = (function () {
             var a = arguments, i = 0, j = a.length, item, v;
             init();
             document.getElementById('bsConsole').style.display = "none";
-            item = ['<div style="clear:both">','<span id="log_timeStamp">'+new Date().toLocaleString()+'</span><br>'];
+            item = ['<div style="clear:both">', '<span id="log_timeStamp">' + new Date().toLocaleString() + '</span><br>'];
             while (i < j) {
                 v = a[i++];
                 if (v && typeof v == 'object') v = JSON.stringify(v);
-                item.push('<div class="bsConsoleItem">' +v + '</div>');
+                item.push('<div class="bsConsoleItem">' + v + '</div>');
             }
             item.push('</div>');
             temp.innerHTML = item.join('');
-            console.log.apply(console,arguments);
+            console.log.apply(console, arguments);
             document.getElementById('bsConsoleViewConsole').append(temp.childNodes[0]);
         }
     };
