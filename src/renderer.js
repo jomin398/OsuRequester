@@ -165,6 +165,7 @@ function appendSdsBtn(){
     btn.innerText =LocalTextDB[0].btn[2];
     btn.onclick =()=>{
         osuDL.init(DB.user.SelectedBeatMapSetID);
+        displayJSON({songInfo:osuDL.songInfo,reqUrl:osuDL.reqUrl});
     }
     sdsBtnw.append(document.createElement('br'),label,btn);
     document.getElementById('sdp').insertAdjacentElement('afterend', sdsBtnw);
