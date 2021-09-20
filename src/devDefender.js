@@ -11,6 +11,7 @@ const DevDefender = (function () {
         alert("happy coding!");
         console.log('happy coding');
         document.getElementById('title').onclick = null;
+        console.log("ID3 TAG Reader/Writer Disable :" + rootSetup.disableId3);
     }
     function devToolsOpened(e) {
         if (DevDefenderSetups.Protection) {

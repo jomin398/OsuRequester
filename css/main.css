@@ -1,3 +1,6 @@
+body{
+  scroll-behavior: smooth;
+}
 .search-container input[type=text] {
     padding: 6px;
     margin-top: 8px;
@@ -84,4 +87,7 @@
 
 .BeatmapSearching_options-container #selects span {
   color:#fff;
+}
+#moreViewWrapper{
+  text-align: center;
 }

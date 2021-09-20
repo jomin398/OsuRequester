@@ -41,19 +41,6 @@ function displayJSON(obj, option) {
     }
 
 }
-function displayInfo(str) {
-    let ele = document.getElementById('displayInfo');
-    if (!ele) {
-        ele = document.createElement('div');
-        ele.id = 'displayInfo';
-        ele.innerText = '[to Show String Here]';
-        document.body.appendChild(ele)
-    }
-    if (str) {
-        ele.innerText = Array.isArray(str) ? str.join('\n') : typeof str == 'object' ? JSON.stringify(str) : str;
-        console.log(str)
-    }
-}
 function blink(targetElem, showMsg) {
     targetElem.classList.add("blink");
     if (showMsg) {
