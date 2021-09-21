@@ -187,6 +187,8 @@ const osuDL = {
                                     aud.href = l;
                                     document.body.querySelector('a:nth-child(2)').href = l;
                                     document.body.querySelector('a:nth-child(2)').download = self.songInfo.fileName;
+                                    
+                                    
 
                                     noti(baseElem.getElementsByTagName('a')[1]);
                                     let time = setTimeout(() => {
@@ -198,7 +200,7 @@ const osuDL = {
                                     }, 3100);
                                     aud.querySelector('audio').src = l;
                                     if (list.length != 2) {
-                                        noimg();
+                                        self.noimg();
                                     }
                                     displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][5] : "Ready to Download or play song!"));
                                     if (self.done) {
