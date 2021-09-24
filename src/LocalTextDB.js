@@ -7,7 +7,7 @@ const LocalTextDB = [
         "BmapSetup": [
             "검색값이 비어있으면 안되요.",
             "Requester: JSON View에서 곡을 결정해주세요",
-            "선택된 BeatMap의 분류 ID :",
+            "선택된 BeatMap의 분류 ID : ",
             [
                 "무덤/UnRanked", "제작 중", "Ranking", "확인됨 (Approved)", "완성도 높음", "유명한 (Loved)", "보류 중"
             ],

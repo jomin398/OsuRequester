@@ -162,7 +162,7 @@ function appendSdsBtn() {
 
     btn = document.createElement('button');
     btn.id = 'sdsBtn';
-    btn.innerText = LocalTextDB[0].btn[2];
+    btn.innerText = LocalTextDB[0].btn[0];
     btn.onclick = () => {
         osuDL.init(DB.user.SelectedBeatMapSetID, (u) => {
             if (!rootSetup.disableId3) {

@@ -26,21 +26,19 @@ const osuDL = {
         this.songInfo.setID = setID;
 
         //parsing selected setID info....
-        this.doc = $('.json-array li:contains(' + this.songInfo.setID + ')')[0];
+        let table = isKor?['식별 ID','아티스트','곡명','소스/출처']:['SetId','Artist','Title','Source'];
 
-        let artist = this.doc.querySelector('li:nth-child(6) span');
-        //some document changed span to a..
-        artist = artist != null ? artist : this.doc.querySelector('ul > li:nth-child(6) a');
-        artist = artist.innerText.replace(regexps[0], '$1').replace(regexps[1], '');
-        artist = regexps[2].test(artist) ? artist.match(regexps[2], '$1')[0].replace(regexps[2], '$1') : artist
-
+        this.doc = DB.user.search.data[DB.user.search.data.findIndex(e=>e[table[0]] ==this.songInfo.setID)];
+        let artist = this.doc[table[1]];
+        artist = regexps[2].test(artist) ? artist.match(regexps[2], '$1')[0] : artist
+        artist= artist.replace(regexps[1],'').trim();
         this.songInfo.artist = artist;
-        this.songInfo.title = this.doc.querySelector('ul > li:nth-child(7) span').innerText.replace(regexps[0], '$1');
-        let source = this.doc.querySelector('ul > li:nth-child(9) span').innerText;
-        this.songInfo.source = "";
+        
+        this.songInfo.title =this.doc[table[2]].replace(regexps[1],'').trim();
+        this.songInfo.source = this.doc[table[3]];
         bs = '';
-        if (source != "\"\"") {
-            this.songInfo.source = "『" + source.replace(regexps[0], '$1') + "』";
+        if (this.songInfo.source!='') {
+            this.songInfo.source = "『" + this.songInfo.source.replace(regexps[0], '$1') + "』";
             bs = ' ';
         }
         this.songInfo.fileName = this.songInfo.title + " [" + this.songInfo.artist + "]" + bs + this.songInfo.source + ".mp3";
