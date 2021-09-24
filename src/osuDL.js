@@ -30,18 +30,20 @@ const osuDL = {
 
         let artist = this.doc.querySelector('li:nth-child(6) span');
         //some document changed span to a..
-        artist = artist != null ? artist : this.doc.querySelector('li:nth-child(6) a');
+        artist = artist != null ? artist : this.doc.querySelector('ul > li:nth-child(6) a');
         artist = artist.innerText.replace(regexps[0], '$1').replace(regexps[1], '');
         artist = regexps[2].test(artist) ? artist.match(regexps[2], '$1')[0].replace(regexps[2], '$1') : artist
 
         this.songInfo.artist = artist;
-        this.songInfo.title = this.doc.querySelector('li:nth-child(7) span').innerText.replace(regexps[0], '$1');
-        let source = this.doc.querySelector('li:nth-child(9) span').innerText;
+        this.songInfo.title = this.doc.querySelector('ul > li:nth-child(7) span').innerText.replace(regexps[0], '$1');
+        let source = this.doc.querySelector('ul > li:nth-child(9) span').innerText;
         this.songInfo.source = "";
+        bs = '';
         if (source != "\"\"") {
-            this.songInfo.source = " 『" + source.replace(regexps[0], '$1') + "』";
+            this.songInfo.source = "『" + source.replace(regexps[0], '$1') + "』";
+            bs = ' ';
         }
-        this.songInfo.fileName = this.songInfo.title + " [" + this.songInfo.artist + "]" + this.songInfo.source + ".mp3";
+        this.songInfo.fileName = this.songInfo.title + " [" + this.songInfo.artist + "]" + bs + this.songInfo.source + ".mp3";
         this.reqUrl = 'https://api.chimu.moe/v1/download/' + this.songInfo.setID + '?n=0';
         console.log(this);
         el = document.createElement('div');
@@ -175,6 +177,7 @@ const osuDL = {
                                         bott.className = 'bottom';
                                         let aud = document.createElement('audio');
                                         aud.controls = true;
+                                        aud.controlsList = "nodownload";
                                         bott.appendChild(aud);
                                         ele.append(top, bott);
                                     }
@@ -187,9 +190,8 @@ const osuDL = {
                                     aud.href = l;
                                     document.body.querySelector('a:nth-child(2)').href = l;
                                     document.body.querySelector('a:nth-child(2)').download = self.songInfo.fileName;
-                                    
-                                    
 
+                                    fftDIsplay.init();
                                     noti(baseElem.getElementsByTagName('a')[1]);
                                     let time = setTimeout(() => {
                                         clearTimeout(time);
@@ -199,6 +201,7 @@ const osuDL = {
                                         $(document).scrollTop($(document).height());
                                     }, 3100);
                                     aud.querySelector('audio').src = l;
+                                    fftDIsplay.onReady();
                                     if (list.length != 2) {
                                         self.noimg();
                                     }
@@ -234,7 +237,9 @@ const osuDL = {
                                 baseElem.append(teg);
                             }
 
-                        })
+                        });
+                        //audio Fft(spectrum) Display 
+                        
                     }).then(null, function error(e) {
                         displayInfo("osuDL: reading Osz Error : " + e);
                     });
@@ -247,7 +252,7 @@ const osuDL = {
             } else {
                 displayInfo("osuDL: " + JSON.stringify(new Error(res.statusText)));
                 this.reqUrl = 'https://chimu.moe/d/' + this.reqUrl.split('download\/')[1];
-                fetch().then(res => {
+                fetch(this.reqUrl).then(res => {
                     // 2) final try
                     if (res.status === 200 || res.status === 0) {
                         req(res);
