@@ -189,7 +189,8 @@ const osuDL = {
                                     document.body.querySelector('a:nth-child(2)').href = l;
                                     document.body.querySelector('a:nth-child(2)').download = self.songInfo.fileName;
 
-                                    fftDIsplay.init();
+                                    fftDIsplay.init('audio','.player');
+
                                     noti(baseElem.getElementsByTagName('a')[1]);
                                     let time = setTimeout(() => {
                                         clearTimeout(time);
@@ -262,7 +263,3 @@ const osuDL = {
         })
     }
 };
-// function downloadInit(){
-//     console.log('dl init')
-//     $('.json-array li:contains("287453")')[0]
-// }

@@ -1,0 +1,29 @@
+.audioFftDisp{
+    position: relative;
+  }
+  .audioFftDisp #canvas {
+    position: inherit;
+    width: 100%;
+    height: 20vh;
+  }
+  .audioFftDisp #audioFftinfo{
+    top: 0;
+    left: 0;
+    position: absolute;
+    color: white;
+    font-weight: bolder;
+    z-index: 3;
+  }
+  @keyframes top-to-bottom_10{
+    0%{top:-10px;}
+    100%{top:0;}
+   }
+  .audioFftDisp a{
+    display: none;
+    top: 0;
+    right: 5px;
+    position: absolute;
+    text-decoration: none;
+    color: white;
+    animation:2s top-to-bottom_10 linear;
+  }
