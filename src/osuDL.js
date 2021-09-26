@@ -95,7 +95,7 @@ const osuDL = {
             if (res.status === 200 || res.status === 0) {
                 displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][1] : "Promissing Osz file... 2/2"));
                 // 3) fetch the zip as Osz file
-                fetch(res.url.replace(/\.osz$/gm, '.zip'))
+                fetch(res.url.replace(/\.osz/gm, '.zip'))
                     .then(function (response) {
                         displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][2] : "reading Osz file..."));
                         // 4) return the zip file contents
@@ -106,7 +106,7 @@ const osuDL = {
                     // 6) parse zip file then get mp3 file.                       
                     .then(function (zip) {
                         displayInfo("osuDL: " + (isKor ? LocalTextDB[0].BmapDL[1][3] : "Parsing Osz file..."));
-                        console.log(zip.files)
+                        console.log(zip.files);
                         osuDL.zip = zip.files;
                         //find file mp3 of beatmap audio.
                         let mp3Filter = w => w.match(/\.mp3$/gm);
@@ -201,6 +201,7 @@ const osuDL = {
                                     }, 3100);
                                     aud.querySelector('audio').src = l;
                                     fftDIsplay.onReady();
+                                    //addReverb();
                                     if (list.length != 2) {
                                         self.noimg();
                                     }

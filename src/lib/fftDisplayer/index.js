@@ -1,3 +1,5 @@
+var audioSourceNode = null;
+var audioCtx = null;
 /**
  * @class fftDIsplay
  */
@@ -35,15 +37,16 @@
         }
         document.querySelector(displayEle).insertAdjacentElement('beforebegin', audioFftDisp);
         this.mode = mode?mode:0;
+        audioCtx = null;
     },
     onReady: function () {
         document.querySelector('.audioFftDisp a').style.display = 'block';
         const audio = document.querySelector(this.eleTargets[0]);
-        var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const audioSrc = audioCtx.createMediaElementSource(audio),
             analyser = audioCtx.createAnalyser(),
             canvas = document.getElementById("canvas");
-
+            audioSourceNode = audioSrc;
         //get self;
         var self = this;
         var szL = self.szL;

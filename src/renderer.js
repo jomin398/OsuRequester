@@ -126,6 +126,7 @@ function addFilter() {
             input.type = 'text';
             input.placeholder = isKor ? LocalTextDB[0].BmapSetup[6][4] : "input Artist or C.V Name or choose it at the below";
             input.name = "search";
+            input.style.width = '70%';
             let btn = document.createElement("button");
             btn.style.marginTop = '9px';
             btn.onclick = () => {

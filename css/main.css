@@ -5,6 +5,7 @@ h1#title{
   text-align: center;
 }
 .search-container input[type=text] {
+  text-overflow: ellipsis;
   width: 50%;
     padding: 6px;
     margin-top: 8px;
@@ -96,12 +97,14 @@ h1#title{
   text-align: center;
 }
 .BeatmapSearching_options-container .select-container#select{
+  
   display: block;
   margin-top: 5px;
 }
 
 .BeatmapSearching_options-container #selectList{
-  text-align: center;
+  width: calc(100% - 60px);
+  text-overflow: ellipsis;
   padding: 5px;
   border: 1px solid #999;
   border-radius: 0px;
