@@ -1,7 +1,11 @@
 body{
   scroll-behavior: smooth;
 }
+h1#title{
+  text-align: center;
+}
 .search-container input[type=text] {
+  width: 50%;
     padding: 6px;
     margin-top: 8px;
     font-size: 17px;
@@ -90,4 +94,18 @@ body{
 }
 #moreViewWrapper{
   text-align: center;
+}
+.BeatmapSearching_options-container .select-container#select{
+  display: block;
+  margin-top: 5px;
+}
+
+.BeatmapSearching_options-container #selectList{
+  text-align: center;
+  padding: 5px;
+  border: 1px solid #999;
+  border-radius: 0px;
+}
+.BeatmapSearching_options-container .select-container button{
+  margin-left: 5px;
 }

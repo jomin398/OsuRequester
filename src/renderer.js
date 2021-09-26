@@ -17,6 +17,18 @@ function dofilter(n, cfn) {
             DB.user.search.data = DB.json.data.filter(e => {
                 return (e.Title == DB.user.search.text || e.Title.toLowerCase() == DB.user.search.text.toLowerCase())
             })
+
+            break;
+        case 2:
+            //Artist
+            console.log(DB.user.search.artist);
+            DB.user.search.data = DB.user.search.data.filter(e => {
+                if(isKor){
+                    return e['아티스트'] == DB.user.search.artist|| e['아티스트'].toLowerCase() == DB.user.search.artist.toLowerCase();
+                }else{
+                    return e.Artist == DB.user.search.artist || e.Artist.toLowerCase() == DB.user.search.artist.toLowerCase();
+                }
+            })
             break;
         default:
             DB.user.search.data = DB.json.data;
@@ -25,7 +37,7 @@ function dofilter(n, cfn) {
 }
 
 function addFilter() {
-    let nList = ['BeatmapSearching_options-container', 'title', 'selects', 'title', 'selects'];
+    let nList = ['BeatmapSearching_options-container', 'title', 'selects', 'title', 'search', 'select'];
     const BNamefilters = ['Included Match', 'Equally Match'];
     const BstateText = DB.StateTextList;
     let boc = document.querySelector("." + nList[0]);
@@ -99,38 +111,104 @@ function addFilter() {
             }
         }
         if (i == 3) {
-            ele.innerText = isKor ? LocalTextDB[0].BmapSetup[6][2] : 'Filtering by States';
+            ele.innerText = isKor ? LocalTextDB[0].BmapSetup[6][3] : 'Filtering by Artist or C.V Name (character voice actor)';
         }
         if (i == 4) {
-            for (j in BstateText) {
-                let sel = document.createElement('a');
-                sel.innerText = BstateText[j];
-                sel.id = BstateText[j];
-                sel.onclick = () => {
-                    let n = 'clicked';
-                    if (sel.classList.contains(n)) {
-                        sel.classList.remove(n);
-                    } else {
-                        sel.parentElement.childNodes.forEach(e => {
-                            if (e.classList.contains(n)) {
-                                e.classList.remove(n)
-                            }
-                        })
-                        console.log('setted Search Name Filter to', sel.id)
-                        sel.classList.add(n);
-                    }
-                }
-                if (j != BstateText.length) {
-                    let spen = document.createElement('span');
-                    spen.innerText = " | ";
-                    if (j != 0) {
-                        ele.appendChild(spen)
-                    }
-
-                }
-                ele.appendChild(sel);
+            let searchContiner = document.getElementById('search');
+            if (searchContiner) {
+                searchContiner.remove();
             }
+            ele = document.createElement('div');
+            ele.id = nList[i]; //"search";
+            ele.style.display = 'block';
+            ele.className = 'search-container';
+            let input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = isKor ? LocalTextDB[0].BmapSetup[6][4] : "input Artist or C.V Name or choose it at the below";
+            input.name = "search";
+            let btn = document.createElement("button");
+            btn.style.marginTop = '9px';
+            btn.onclick = () => {
+                let v = document.querySelector('#search input').value.trim();
+                console.log(v);
+                DB.user.search.artist = v;
+                dofilter(2,displayInfo("Requester: " + (isKor ? LocalTextDB[0].BmapSetup[6][6] : "filtered with Artist.")));
+            };
+            let icon = document.createElement('i');
+            icon.className = 'fa fa-search';
+            btn.append(icon);
+            ele.append(input, btn);
         }
+        if (i == 5) {
+            ele = document.createElement('div');
+            ele.id = nList[i];
+            ele.className = 'select-container';
+            sel = document.createElement('select');
+            sel.id = 'selectList';
+            let artists = [];
+            let o = DB.json.data.filter(e => e.Artist);
+            for (j in o) {
+                artists.push(o[j].Artist)
+            }
+            artists = artists.filter(function (item, pos, self) {
+                return self.indexOf(item) == pos;
+            });
+            let el = document.createElement('option');
+            el.innerText = isKor ? LocalTextDB[0].BmapSetup[6][5] : "select Artist or C.V";
+            sel.appendChild(el);
+            for (j in artists) {
+                let el = document.createElement('option');
+                el.innerText = artists[j];
+                el.value = artists[j];
+                sel.appendChild(el);
+            }
+            btn = document.createElement('button');
+            btn.innerText = isKor ? LocalTextDB[0].btn[0] : "select This";
+            btn.onclick = () => {
+                let s = document.querySelector('#selectList');
+                let v = s.options[s.selectedIndex].value.trim();
+                
+                if (s.selectedIndex!=0) {
+                    DB.user.search.artist = v;
+                    dofilter(2,()=>displayInfo("Requester: " + (isKor ? LocalTextDB[0].BmapSetup[6][6] : "filtered with Artist.")));
+                }
+            }
+            ele.append(sel, btn)
+
+        }
+        // if (i == 6) {
+        //     ele.innerText = isKor ? LocalTextDB[0].BmapSetup[6][2] : 'Filtering by States';
+        // }
+        // if (i == 7) {
+        //     for (j in BstateText) {
+        //         let sel = document.createElement('a');
+        //         sel.innerText = BstateText[j];
+        //         sel.id = BstateText[j];
+        //         sel.onclick = () => {
+        //             let n = 'clicked';
+        //             if (sel.classList.contains(n)) {
+        //                 sel.classList.remove(n);
+        //             } else {
+        //                 sel.parentElement.childNodes.forEach(e => {
+        //                     if (e.classList.contains(n)) {
+        //                         e.classList.remove(n)
+        //                     }
+        //                 })
+        //                 console.log('setted Search Name Filter to', sel.id)
+        //                 sel.classList.add(n);
+        //             }
+        //         }
+        //         if (j != BstateText.length) {
+        //             let spen = document.createElement('span');
+        //             spen.innerText = " | ";
+        //             if (j != 0) {
+        //                 ele.appendChild(spen)
+        //             }
+
+        //         }
+        //         ele.appendChild(sel);
+        //     }
+        // }
         boc.append(ele);
     }
     document.getElementById('jsonWrapper').insertAdjacentElement('beforebegin', boc)
@@ -362,8 +440,13 @@ function initSearch() {
     if (searchContiner) {
         searchContiner.remove();
     }
+    let more = document.getElementById('moreViewWrapper');
+    if(more){
+        more.remove();
+    }
     searchContiner = document.createElement('div');
     searchContiner.id = "search";
+    searchContiner.style.textAlign= 'center';
     searchContiner.className = 'search-container';
     let input = document.createElement('input');
     input.type = 'text';
@@ -371,6 +454,7 @@ function initSearch() {
     input.name = "search";
     input.required = true;
     let btn = document.createElement("button");
+    btn.style.float = 'unset';
     btn.onclick = menuFOS;
     let icon = document.createElement('i');
     icon.className = 'fa fa-search';
